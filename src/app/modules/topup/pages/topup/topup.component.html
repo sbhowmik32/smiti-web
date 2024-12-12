@@ -1,0 +1,251 @@
+<section>
+  <div class="feature-section">
+    <div class="feature-section-wrapper">
+      <div class="feature-list-header-wrapper">
+        <div class="feature-list-header">
+          <h3>Topup List</h3>
+        </div>
+        <div>
+          <span class="float-right">
+            <button type="button" class="primary-btn" (click)="createTopup()">
+              + Add New
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="feature-list-search-filter"></div>
+      <form [formGroup]="filterForm">
+        <div class="row">
+          <div class="col-md-5 col-lg-4 col-xl-6">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="d-flex align-items-center gap-2">
+                    <select
+                      style="width: 5rem"
+                      class="form-control mx-25 w-100px py-2 custom-select"
+                      formControlName="pageSize"
+                      (change)="filterData()"
+                    >
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7 col-lg-8 col-xl-6">
+            <div class="filter-search-option">
+              <div class="input-group justify-content-end gap-3">
+                <button
+                  [ngClass]="{ hide: isFilter === false }"
+                  type="button"
+                  class="btn-filter"
+                  (click)="toggleFilter()"
+                >
+                  <i class="fas fa-filter filter-icon mr-2"></i>
+                </button>
+
+                <div class="d-flex align-items-center position-relative w-50">
+                  <app-keenicon
+                    name="magnifier"
+                    class="fs-3 search-input-icon"
+                  ></app-keenicon>
+                  <input
+                    type="text"
+                    data-action="filter"
+                    class="form-control form-control-solid ps-12 search-input"
+                    placeholder="Search ..."
+                    formControlName="searchKey"
+                    (keyup)="filterData()"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-container" [ngClass]="{ show: isShowFilter }">
+          <div class="row mb-2">
+            <div class="col-2">
+              <input
+                formControlName="FromDate"
+                placeholder="startDate"
+                class="form-control"
+                ngbDatepicker
+                #d23="ngbDatepicker"
+                (click)="d23.toggle()"
+              />
+            </div>
+            <div class="col-2">
+              <input
+                formControlName="ToDate"
+                placeholder="ToDate"
+                class="form-control"
+                ngbDatepicker
+                #d3="ngbDatepicker"
+                (click)="d3.toggle()"
+              />
+            </div>
+
+            <div class="col-4">
+              <div>
+                <button (click)="getFilteredList()" class="search-btn">
+                  Search
+                </button>
+                <button (click)="resetFilterForm()" class="reset-btn ms-3">
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="content mt-2">
+        <div class="table-responsive">
+          <table class="mt-1 table table-hover mt-1 text-center">
+            <thead class="table-head rounded-lg">
+              <tr>
+                <th class="w-55px">SL.</th>
+                <th class="text-start">TopUp Date</th>
+                <th class="text-start">MemberShipNo</th>
+                <th class="text-start">Amount</th>
+                <th class="text-start">Create By</th>
+                <th class="text-start">Status</th>
+                <th class="text-start">Payment Detail</th>
+                <th class="text-start">Print</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let data of topups; let i = index"
+                (dblclick)="careateOrEditModalPopUp(createOrUpdateModal, data)"
+              >
+                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                <td class="text-start">{{ data.TopUpDate | date }}</td>
+                <td class="text-start">{{ data.MemberShipNo }}</td>
+                <td class="text-start">{{ data.TotalAmount }}</td>
+                <td class="text-start">{{ data.CreateByName }}</td>
+                <td class="text-start">{{ data.Status }}</td>
+
+                <td class="text-start">
+                  <div style="display: flex; flex-wrap: wrap">
+                    <div
+                      class="test"
+                      *ngFor="let y of data.TopUpDetails"
+                      style="margin-right: 5px"
+                    >
+                      <button
+                        class="btn btn-secondary btn-sm"
+                        (click)="
+                          showTopUpDetail(data.Id, y.Id, paymentDetailModal)
+                        "
+                      >
+                        {{ y.PaymentMethodText }}
+                        <i class="fa fa-circle ml-1"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td class="w-175px">
+                  <a
+                    class="btn btn-secondary cursor-pointer"
+                    (click)="openPdfViewerModal(printModal, data.Id)"
+                    >Print<i class="fa fa-file-pdf-o" aria-hidden="true"></i
+                  ></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <ngb-pagination
+              class="d-flex justify-content-end"
+              [collectionSize]="numberOfEntries"
+              [(page)]="currentPage"
+              [pageSize]="pageSize"
+              (pageChange)="updatePageWiseTableData($event)"
+              [boundaryLinks]="true"
+              [maxSize]="4"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #paymentDetailModal let-modal>
+  <div>
+    <div class="modal-header">
+      <h4 class="modal-title ml-1" id="myModalLabel160">Topup details</h4>
+      <button
+        type="button"
+        aria-label="Close"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+      ></button>
+    </div>
+  </div>
+  <div class="px-3 py-2">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Payment Method</th>
+          <th>Amount</th>
+          <th>TrxNo</th>
+          <th>MachineNo</th>
+          <th>TrxCardNo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ paymentInformation.PaymentMethodText }}</td>
+          <td>{{ paymentInformation.Amount }}</td>
+          <td>{{ paymentInformation.TrxNo }}</td>
+          <td>{{ paymentInformation.MachineNo }}</td>
+          <td>{{ paymentInformation.TrxCardNo }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex justify-content-end w-100 border-0 gap-2 modal-footer">
+    <button class="discard-btn me-1" (click)="modal.dismiss('Cross click')">
+      Close
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #printModal let-modal>
+  <div>
+    <div class="modal-header">
+      <h4 class="modal-title ml-1" id="myModalLabel160">Topup Details Print</h4>
+      <button
+        type="button"
+        aria-label="Close"
+        class="btn-close"
+        (click)="modal.dismiss('Cross click')"
+      ></button>
+    </div>
+  </div>
+  <div class="px-3 py-2">
+    <div *ngIf="url">
+      <ngx-doc-viewer
+        [url]="url"
+        viewer="url"
+        style="width: 100%; height: 100vh"
+      ></ngx-doc-viewer>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end w-100 border-0 gap-2 modal-footer">
+    <button class="discard-btn me-1" (click)="modal.dismiss('Cross click')">
+      Close
+    </button>
+  </div>
+</ng-template>

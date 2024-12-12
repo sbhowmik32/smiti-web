@@ -1,0 +1,159 @@
+<div class="card">
+  <div class="card-header">
+    <p>Topup Create</p>
+  </div>
+  <div class="card-body">
+
+    <form [formGroup]="topUpForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-4">
+              <label for="">Membership No.</label>
+            </div>
+            <div class="col-4">
+              <div class="d-flex search-member-info">
+                <input type="text" class="form-control" formControlName="MemberShipNo" (keyup.enter)="showMemberInfo()">
+                <a (click)="showMemberInfo()" class="search-btn"><i class="fa fa-search"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2" *ngIf="member">
+            <div class="col-4">
+              <label for="">Topup Amount</label>
+            </div>
+            <div class="col-4">
+              <div class="d-flex mt-2">
+                <input type="number" class="form-control" formControlName="TotalAmount">
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-6">
+          <div class="row" *ngIf="member">
+            <div class="col-4">
+              <img [src]="member.ImgFileUrl">
+            </div>
+            <div class="col-8">
+              <div class="row mb-2">
+                <div class="col-4 fw-bold">Name</div>
+                <div class="col-1">:</div>
+                <div class="col-7">{{member.FullName}}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4 fw-bold">Type</div>
+                <div class="col-1">:</div>
+                <div class="col-7">{{member.MemberTypeText}}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4 fw-bold">Status</div>
+                <div class="col-1">:</div>
+                <div class="col-7">{{member.MemberActiveStatusText}}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4 fw-bold">Current Balance </div>
+                <div class="col-1">:</div>
+                <div class="col-7">{{member.CurrentBalance}}</div>
+              </div>
+              <div class="row">
+                <div class="col-4 fw-bold">Amount</div>
+                <div class="col-1">:</div>
+                <div class="col-7">{{totalSubscriptionFee | number: '1.0-2'}} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="mt-3 payment-info" *ngIf="member">
+
+        <div class="row mb-2">
+          <div class="col-12">
+            <label for="">Payment Details</label>
+            <div>
+              <div formArrayName="TopUpDetails" class="mt-2 p-1">
+                <div *ngFor="let item of TopUpDetailsArray; let i = index" class="pt-1">
+                  <div [formGroupName]="i" class="section-body">
+                    <div class="w-13-per">
+                      <label for="" *ngIf="i==0">Payment Type</label>
+                      <ng-select [items]="paymentMethodList" bindLabel="Title" placeholder="Payment Type" bindValue="Id"
+                        formControlName="PaymentMethodId"></ng-select>
+
+                    </div>
+                    <div class="w-13-per">
+                      <label for="" *ngIf="i==0">Payment options</label>
+                      <ng-select [items]="creditCardList" bindLabel="CardName" placeholder="Payment options"
+                        bindValue="slno" formControlName="BankId"></ng-select>
+
+                    </div>
+
+                    <div>
+                      <div class="form-group">
+                        <label for="" *ngIf="i==0">Amount</label>
+                        <input type="number" formControlName="Amount" id="name" class="form-control"
+                          placeholder="Quantity" name="Quantity" />
+
+                      </div>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="" *ngIf="i==0">Trx No.</label>
+                        <input type="text" formControlName="TrxNo" id="name" class="form-control" placeholder="Quantity"
+                          name="Quantity" />
+
+                      </div>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="" *ngIf="i==0">Machine No.</label>
+                        <input type="text" formControlName="MachineNo" id="name" class="form-control"
+                          placeholder="Quantity" name="Quantity" />
+
+                      </div>
+                    </div>
+                    <div>
+                      <div class="form-group">
+                        <label for="" *ngIf="i==0">Card No.</label>
+                        <input type="text" formControlName="TrxCardNo" id="name" class="form-control"
+                          placeholder="Quantity" name="Quantity" />
+
+                      </div>
+                    </div>
+                    <div class="w-13-per">
+                      <label for="" *ngIf="i==0">Action</label>
+                      <div class="form-group d-flex gap-1">
+                        <button [ngClass]="{
+                          hidden: i == 0 && TopUpDetailsArray.length == 1
+                        }" type="button" class="btn-trash me-1" (click)="removeItem(i)">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                        <button [ngClass]="{
+                          hidden: !(i == TopUpDetailsArray.length - 1)
+                        }" type="button" class="btn-add" (click)="addItemDetail(i)">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex w-100 justify-content-end mt-2">
+      <button *ngIf="member" class="primary-btn" (click)="onSubmit()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<swal #noticeSwal [swalOptions]="swalOptions"> </swal>

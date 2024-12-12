@@ -1,0 +1,8 @@
+.search-btn{
+    background: var(--primary-theme-color);
+    padding: 6px 9px;
+    border-radius: 3px;
+}
+.search-btn i{
+    color: white;
+}

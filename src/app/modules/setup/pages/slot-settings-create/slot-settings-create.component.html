@@ -1,0 +1,107 @@
+
+<div class="card">
+  <div class="card-header">
+    <p>Executive Create</p>
+  </div>
+  <div class="card-body">
+    <div class="row" id="table-bordered">
+      <div class="col-12">
+        <div class="">
+          <div class="card-body">
+            <form [formGroup]="serviceSlotSettingsForm" (ngSubmit)="onSubmit()">
+              <div class="col-md-3">
+                <label>Select Service</label>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <ng-select
+                    class="last"
+                    [items]="serviceList"
+                    bindLabel="Title"
+                    bindValue="Id"
+                    placeholder="Service"
+                    formControlName="ServiceId"
+                    [clearable]="true"
+                    (change)="bindItem($event)"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+
+              <div formArrayName="SlotList">
+                <div
+                  *ngFor="let day of serviceSlotSettingsArray; let i = index"
+                  [formGroupName]="i"
+                  class="mb-2 row"
+                >
+                  <div class="col-12">
+                    <div class="p-1 border-bottom">
+                      <div class="row mb-2">
+                        <div class="col-2">
+                          <h3 class="mb-0 font-weight-bold text-primary" for="Day">
+                            {{ day.value.DayText }}
+                          </h3>
+                          <div>
+                         
+                          </div>
+                        </div>
+                      </div>
+
+                      <div formArrayName="SlotList" class="p-1">
+                        <div
+                          *ngFor="let slot of day.get('SlotList').controls; let j = index"
+                          [formGroupName]="j"
+                          class="mb-1 row"
+                        >
+                          <div class="col-2 align-content-center">
+                            <label for="Slot">Slot {{ j + 1 }}</label>
+                          </div>
+                          <div class="col-8 align-content-center">
+                            <div class="time-picker-cantainer">
+                              <input type="time" formControlName="StartTime" class="form-control" />
+                              <input type="time" formControlName="EndTime" class="form-control" />
+                              <input
+                                type="checkbox"
+                                [checked]="serviceSlotSettingsForm.value.IsWholeDay"
+                                formControlName="IsWholeDay"
+                         
+                                style="box-shadow: none"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-2">
+                            <button
+                              [ngClass]="{
+                                hidden: j === 0
+                              }"
+                              type="button"
+                              class="btn-trash me-1"
+                              (click)="removeSlot(i, j)"
+                            >
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn-add text-white"
+                              (click)="addSlot(i, day.value.DayText)"
+                            >
+                              <i class="fa fa-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="mt-1 d-flex justify-content-end">
+              <a class="mt-1 primary-btn" (click)="onSubmit()">Submit</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<swal #noticeSwal [swalOptions]="swalOptions"> </swal>

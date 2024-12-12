@@ -1,0 +1,146 @@
+
+
+<form [formGroup]="memberSubscriptionPaymentInfoSearchForm">
+  <div class="row">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-4">
+          <label for="">Membership No.</label>
+
+        </div>
+        <div class="col-4">
+          <input type="text" class="form-control" formControlName="MemberShipNo" (keyup.enter)="showMemberInfo()">
+        </div>
+        <div class="col-4 align-content-center">
+          <a (click)="showMemberInfo()" class="search-btn"><i class="fa fa-search"></i></a>
+        </div>
+      </div>
+      <div class="row" *ngIf="member">
+        <div class="col-4">
+          <img [src]="member.ImgFileUrl">
+        </div>
+        <div class="col-8">
+          <div class="row mb-2">
+            <div class="col-4">Name</div>
+            <div class="col-1">:</div>
+            <div class="col-7">{{member.FullName}}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4">Type</div>
+            <div class="col-1">:</div>
+            <div class="col-7">{{member.MemberTypeText}}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4">Status</div>
+            <div class="col-1">:</div>
+            <div class="col-7">{{member.MemberActiveStatusText}}</div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-4">Current Balance	</div>
+            <div class="col-1">:</div>
+            <div class="col-7">{{member.CurrentBalance}}</div>
+          </div>
+          <div class="row">
+            <div class="col-4">Amount</div>
+            <div class="col-1">:</div>
+            <div class="col-7">{{totalSubscriptionFee | number: '1.0-2'}} </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-6" *ngIf="member">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Due List</button>
+          <button  class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Advanced List</button>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active my-3" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          
+
+
+
+          <div class="content mt-2">
+            <div class="table-responsive">
+              <table class="mt-1 table table-hover mt-1 text-center customer-list">
+                <thead class="table-head rounded-lg">
+                  <tr>
+                    <th class="text-start">Year</th>
+                    <th class="text-start">Title</th>
+                    <th class="text-start">Date</th>
+                    <th class="text-start">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let data of memberSubFeeDueList; let i = index"
+                  >
+                    <td class="text-start">{{ data.PaymentYear }}</td>
+                    <td class="text-start">{{ data.SubscriptionName }}</td>
+                    <td class="text-start">{{ data.PaymentDate | date: 'yyyy-MM-dd' }}</td>
+                    <td class="text-start">{{ data.PaymentAmount }}</td>
+    
+                    
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr *ngIf="memberSubFeeDueList?.length > 0">
+                    <td colspan="4" class="text-lg-start">
+                      <a class="primary-btn" (click)="saveOrTopup(payment, pdfViewerModal)">Payment</a>
+                    </td>
+                  </tr>
+                </tfoot>
+                
+              </table>
+            </div>
+       
+          </div>
+
+
+
+
+          
+        </div>
+        <div  class="tab-pane fade my-3" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+
+          <div class="content mt-2">
+            <div class="table-responsive">
+              <table class="mt-1 table table-hover mt-1 text-center customer-list">
+                <thead class="table-head rounded-lg">
+                  <tr>
+                    <th class="text-start">Year</th>
+                    <th class="text-start">Title</th>
+                    <th class="text-start">Date</th>
+                    <th class="text-start">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let data of memberSubAdvancedList; let i = index"
+                  >
+                    <td class="text-start">{{ data.PaymentYear }}</td>
+                    <td class="text-start">{{ data.SubscriptionName }}</td>
+                    <td class="text-start">{{ data.PaymentDate | date: 'yyyy-MM-dd' }}</td>
+                    <td class="text-start">{{ data.PaymentAmount }}</td>
+    
+                    
+                  </tr>
+                </tbody>
+                
+              </table>
+            </div>
+       
+          </div>
+
+
+
+        </div>
+        
+       
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,247 @@
+<section>
+  <div class="feature-section">
+    <div class="feature-section-wrapper">
+      <div class="feature-list-header-wrapper">
+        <div class="feature-list-header">
+          <h3>Subscription Payment List</h3>
+        </div>
+      </div>
+      <div class="feature-list-search-filter"></div>
+      <form [formGroup]="filterForm">
+        <div class="row">
+          <div class="col-md-5 col-lg-4 col-xl-6">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="d-flex align-items-center gap-2">
+                    <select style="width: 5rem" class="form-control mx-25 w-100px py-2 custom-select"
+                      formControlName="pageSize" (change)="filterData()">
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7 col-lg-8 col-xl-6">
+            <div class="filter-search-option">
+              <div class="input-group justify-content-end gap-3">
+                <button [ngClass]="{ hide: isFilter === false }" type="button" class="btn-filter"
+                  (click)="toggleFilter()">
+                  <i class="fas fa-filter filter-icon mr-2"></i>
+                </button>
+
+                <div class="d-flex align-items-center position-relative w-50">
+                  <app-keenicon name="magnifier" class="fs-3 search-input-icon"></app-keenicon>
+                  <input type="text" data-action="filter" class="form-control form-control-solid ps-12 search-input"
+                    placeholder="Search ..." formControlName="searchKey" (keyup)="filterData()" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="filter-container" [ngClass]="{'show':isShowFilter}">
+
+          <div class="row mb-2">
+
+            <div class="col-2">
+              <input type="date" formControlName="startDate" placeholder="startDate" class="form-control">
+            </div>
+            <div class="col-2">
+              <input type="date" formControlName="endDate" placeholder="endDate" class="form-control">
+            </div>
+
+            <div class="col-4">
+              <div>
+                <button (click)="getFilteredSubscriptionPaymentList()" class="search-btn">Search</button>
+                <button (click)="resetFilterForm()" class="reset-btn ms-3">Reset</button>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </form>
+      <div class="content mt-2">
+        <div class="table-responsive">
+          <table class="mt-1 table table-hover mt-1 text-center customer-list">
+            <thead class="table-head rounded-lg">
+              <tr>
+                <th class="w-55px">SL.</th>
+                <th class="text-start">Membership No.</th>
+                <th class="text-start">Member Name</th>
+                <th class="text-start">Payment No</th>
+                <th class="text-start">Actual Payment Date</th>
+                <th class="text-start">TotalPaymentAmount</th>
+
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of subscriptionPaymentList; let i = index"
+                (dblclick)="careateOrEditModalPopUp(createOrUpdateModal, data)">
+                <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                <td class="text-start">{{ data.MemberShipNo }}</td>
+                <td class="text-start">{{ data.MemberName }}</td>
+                <td class="text-start">{{ data.PaymentNo }}</td>
+                <td class="text-start">{{ data.ActualPaymentDate }}</td>
+                <td class="text-start">{{ data.TotalPaymentAmount }}</td>
+
+                <td class="w-175px">
+                  <div class="action-dropdown">
+                    <button class="btn-sm btn-dropdown-action dropdown-toggle" type="button"
+                      id="dropdownMenuButton{{ i }}" (click)="toggleDropdown(i, $event)"
+                      [class.active]="isOpenAction === i">
+                      Actions
+                    </button>
+
+                    <ul class="dropdown-menu" *ngIf="isOpenAction === i" appClickOutside
+                      [class.dropup]="i + 1 > subscriptionPaymentList?.length - 2" (clickOutside)="closeDropdown()">
+                      <li>
+                        <button class="dropdown-item" style="cursor: pointer"
+                          (click)="getByPaymentNo(data.PaymentNo, viewerModal)">
+                          <i class="fa fa-info"></i>
+                        </button>
+
+                      </li>
+                      <li>
+                        <button class="dropdown-item" (click)="openPdfViewerModal(pdfViewerModal, data.PaymentNo)">
+                          <i class="fa-regular fa-file-lines"></i>
+                        </button>
+                      </li>
+                      <!-- <li>
+                        <button class="dropdown-item" title="Delete Item" type="button"
+                          (click)="deleteButtonClick(data.Id)">
+                          <i class="far fa-trash-alt" aria-hidden="true"></i>
+                          Delete
+                        </button>
+                      </li> -->
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="subscriptionPaymentList?.length < 1 || hasData === false">
+              <tr>
+                <td colspan="7" class="p-0">
+                  <app-empty [message]="'No Data Found'"></app-empty>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <ngb-pagination class="d-flex justify-content-end" [collectionSize]="numberOfEntries" [(page)]="currentPage"
+              [pageSize]="pageSize" (pageChange)="updatePageWiseTableData($event)" [boundaryLinks]="true" [maxSize]="4">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<ng-template #viewerModal let-modal>
+  <div>
+    <div class="modal-header">
+      <h4 class="modal-title ml-1" id="myModalLabel160">Member List Setup</h4>
+      <button type="button" aria-label="Close" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="col-md-6">
+        <table class="table table-sm">
+          <tr>
+            <td>MemberShip No</td>
+            <td>:</td>
+            <td>{{ subPayemnt[0].MemberShipNo }}</td>
+          </tr>
+          <tr>
+            <td>Member Name</td>
+            <td>:</td>
+            <td>{{ subPayemnt[0].MemberName }}</td>
+          </tr>
+          <tr>
+            <td>Payment No</td>
+            <td>:</td>
+            <td>{{ subPayemnt[0].PaymentNo }}</td>
+          </tr>
+          <tr>
+            <td>Total Payment Amount</td>
+            <td>:</td>
+            <td>{{ subPayemnt[0].TotalPaymentAmount }}</td>
+          </tr>
+          <tr>
+            <td>Actual Payment Date</td>
+            <td>:</td>
+            <td>{{ subPayemnt[0].ActualPaymentDate | date }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-md-12">
+        <div class="content mt-2">
+          <div class="table-responsive">
+            <table class="mt-1 table table-hover mt-1 text-center customer-list">
+              <thead class="table-head rounded-lg">
+                <tr>
+                  <th>SL</th>
+                  <th>Payment Date</th>
+                  <th>Actual Payment Date</th>
+                  <th>Payment Year</th>
+                  <th>Subscription Name</th>
+                  <th>Membership No</th>
+                  <th>Abroad Fee Amount</th>
+                  <th>Payment Amount</th>
+                  <th>Late Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let x of subPayemnt ; let i = index">
+                  <td class="text-right">
+                    {{ (page - 1) * pageSize + i + 1 }}
+                  </td>
+                  <td>{{ x.PaymentDate | date }}</td>
+                  <td>{{ x.ActualPaymentDate | date }}</td>
+                  <td>{{ x.PaymentYear }}</td>
+                  <td>{{ x.SubscriptionName }}</td>
+                  <td>{{ x.MemberShipNo }}</td>
+                  <td>{{ x.AbroadFeeAmount }}</td>
+                  <td>{{ x.PaymentAmount }}</td>
+                  <td>{{ x.LateAmount }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="float: right" class="mt-2">
+          <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="subPayemnt.length"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #pdfViewerModal let-modal>
+  <div>
+    <div class="modal-header">
+      <!-- <h4 class="modal-title ml-1" id="myModalLabel160">Member List Setup</h4> -->
+      <button type="button" aria-label="Close" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+  </div>
+  <div>
+    <div *ngIf="url">
+      <ngx-doc-viewer [url]="url" viewer="url" style="height: 70vh"></ngx-doc-viewer>
+    </div>
+
+  </div>
+</ng-template>

@@ -1,0 +1,123 @@
+<div class="card">
+  <div class="card-header">
+    <p>Availability Create</p>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="availabilityForm">
+
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label for="" >Availability Name</label>
+            <input type="text" formControlName="Name" id="name" class="form-control"
+              placeholder="Name" name="Name" />
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label for="" >Availability Date</label>
+            <input type="date" formControlName="AvailabilityDate" id="name" class="form-control"
+              placeholder="Name" name="Name" />
+          </div>
+        </div>
+        <div class="col-4" style="align-content: end;">
+          <div class="form-group">
+            <label for="" class="me-3">Life Time</label>
+            <input
+            type="checkbox"
+            
+            formControlName="IsLifeTime"
+        
+            style="box-shadow: none"
+          />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2 mt-10">
+        <div class="col-12">
+          <h5 for="">Availability Details</h5>
+          <div class="border rounded p-3 ">
+            
+            <div>
+              <div formArrayName="AvailabilityDetailVms" class=" p-1">
+                <div *ngFor="let item of availabilityDetailArray; let i = index" class="pt-1">
+                  <div [formGroupName]="i" class="section-body">
+                    
+                    
+                    <div class="row mb-2">
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="" *ngIf="i==0">Title</label>
+                          <input type="text" formControlName="Title" id="name" class="form-control"
+                            placeholder="Title" name="Title" />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="" *ngIf="i==0">StartTime</label>
+                          <input type="time" formControlName="StartTime" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="" *ngIf="i==0">EndTime</label>
+                          <input type="time" formControlName="EndTime" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-2">
+                        <div class="form-group">
+                          <label for="" *ngIf="i==0">IsWholeDay</label>
+                         <div>
+                          <input
+                          type="checkbox"
+                          [checked]="item.IsWholeDay"
+                          formControlName="IsWholeDay"
+                      
+                          style="box-shadow: none"
+                        />
+                         </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-2">
+                        <label for="" *ngIf="i==0">Action</label>
+                        <div class="form-group d-flex gap-1">
+                          <button [ngClass]="{
+                            hidden: i == 0 && TopUpDetailsArray?.length == 1
+                          }" type="button" class="btn-trash me-1" (click)="removeItem(i)">
+                            <i class="far fa-trash-alt"></i>
+                          </button>
+                          <button [ngClass]="{
+                            hidden: !(i == TopUpDetailsArray?.length - 1)
+                          }" type="button" class="btn-add" (click)="addItemDetail(i)">
+                            <i class="fa fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                   
+                    
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+    </form>
+    
+   
+
+
+    <div>
+      <button class="primary-btn" (click)="onSubmit()">Save</button>
+    </div>
+
+  </div>
+</div>
+<swal #noticeSwal [swalOptions]="swalOptions"> </swal>

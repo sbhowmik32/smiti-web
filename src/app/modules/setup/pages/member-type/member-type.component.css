@@ -1,0 +1,12 @@
+.status-subscribed {
+    background: #00e370;
+    padding: 4px 22px;
+    font-weight: 500;
+    color: white;
+}
+.status-unsubscribed {
+    background: #cf1846;
+    padding: 4px 22px;
+    font-weight: 500;
+    color: white;
+}

@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-header">
+    <p>Activity Ticket Create</p>
+  </div>
+  <div class="card-body">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist" [ngClass]="{'locked':ticketTypeId!=0}">
+        <button (click)="selectTab(1)" [ngClass]="{'active':selectedTab==1}" class="nav-link " id="nav-home-tab" data-bs-toggle="tab"  type="button" role="tab" aria-controls="nav-home" aria-selected="true">Venue</button>
+        <button (click)="selectTab(2)" [ngClass]="{'active':selectedTab==2}" class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"  type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Event</button>
+        <button (click)="selectTab(3)"  [ngClass]="{'active':selectedTab==3}" class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"  type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Service</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div *ngIf="selectedTab==1"  class="my-3"  role="tabpanel" >
+        <app-venue-activity-ticket [venueTicketId]="ticketId"></app-venue-activity-ticket>
+      </div>
+      <div *ngIf="selectedTab==2"  class="my-3"  role="tabpanel">
+        <app-event-activity-ticket [eventTicketId]="ticketId"></app-event-activity-ticket> 
+      </div>
+      <div *ngIf="selectedTab==3" class="my-3"  role="tabpanel">
+        <app-service-activity-ticket [serviceTicketId]="ticketId"></app-service-activity-ticket>
+      </div>
+    
+    </div>
+  </div>
+  
+</div>
